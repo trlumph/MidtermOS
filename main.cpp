@@ -2,10 +2,32 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #include <iostream>
-#include "options_parser.h"
+#include <csignal>
+#include <unistd.h>
 
-int main(int argc, char* argv[]) {
-    command_line_options_t command_line_options{argc, argv};
-    std::cout << "A flag value: " << command_line_options.get_A_flag() << std::endl;
+// Signal handler for SIGUSR1
+void handle_sigusr1(int signal) {
+    if (signal == SIGUSR1) {
+        std::cout << "Hello!" << std::endl;
+    }
+}
+
+// Signal handler for SIGUSR2
+void handle_sigusr2(int signal) {
+    if (signal == SIGUSR2) {
+        exit(0);
+    }
+}
+
+int main() {
+    // Register signal handlers
+    signal(SIGUSR1, handle_sigusr1);
+    signal(SIGUSR2, handle_sigusr2);
+
+    while (true) {
+        // Wait for signals
+        pause();
+    }
+
     return 0;
 }
